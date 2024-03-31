@@ -4,6 +4,7 @@ import Container from "./Container-Component.jsx";
 import { useState } from "react";
 import AddToDoComponent from "./ToDo-Add-Component.jsx";
 import ToDoPopupComponent from "./ToDo-Popup-Component.jsx";
+import { ToDoContextComponent } from "./ToDoStore/ToDo-Context-Component.jsx";
 
 function ToDoComponent(props) {
   const { DataItem, emptyDataItem } = props;
@@ -73,10 +74,15 @@ function ToDoComponent(props) {
       key={item.id}
       dataItem={item}
       btnProp={btnDelete}
-      handleDeleteClick={buttonDeletClick}
+    //  handleDeleteClick={buttonDeletClick} // handle by provider
     />
   ));
   return (
+    <ToDoContextComponent.Provider value={{
+      addItemList: AddListItem, 
+      deleteItemList:buttonDeletClick     
+    }     
+    }>
     <Container>
       <h3 className="text-left">{strHandleEventtxt}</h3>
       <h1 className="text-center">ToDo List</h1>
@@ -97,6 +103,7 @@ function ToDoComponent(props) {
       ))*/}
       {jsonData}
     </Container>
+    </ToDoContextComponent.Provider>
   );
 }
 export default ToDoComponent;

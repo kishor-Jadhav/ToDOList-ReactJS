@@ -1,8 +1,12 @@
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import CommonButton from "../Test/CommonButton";
+import { ToDoContextComponent } from "./ToDoStore/ToDo-Context-Component";
 
-const AddToDoComponent = (props) => {
-  const { AddToDoListItem } = props;
+const AddToDoComponent = () => {
+ // const { AddToDoListItem } = props; hadle with context
+  const {addItemList} = useContext(ToDoContextComponent);
+  
+
   const [txtListName, setTxtListName] = useState("Test");
   const [dtpDate, setdtpDate] = useState(""); // Instead of use useRef
   const reftxtListName = useRef('Test');
@@ -25,7 +29,7 @@ const AddToDoComponent = (props) => {
       id: "add",
       type: "submit",
     };
-    AddToDoListItem(evItem, fieldValue);
+    addItemList(evItem, fieldValue);
     reftxtListName.current.value="";
     refdtpDate.current.value="";
   };
