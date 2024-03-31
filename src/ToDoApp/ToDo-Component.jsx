@@ -1,18 +1,38 @@
 import CommonButton from "../Test/CommonButton";
 import ToDoRowComponent from "./ToDo-Row-Component.jsx";
 import Container from "./Container-Component.jsx";
-import { useState } from "react";
+import { useReducer, useState } from "react";
 import AddToDoComponent from "./ToDo-Add-Component.jsx";
 import ToDoPopupComponent from "./ToDo-Popup-Component.jsx";
 import { ToDoContextComponent } from "./ToDoStore/ToDo-Context-Component.jsx";
+
+const ToDoComponentReducer=(currentState,action)=>{
+let newDataItem = currentState;
+if(action.type=='add-New-Item'){
+  const item = {
+    id:action.payload.id,
+    listName: action.payload.listName,
+    listDate: action.payload.listDate,
+  };
+ 
+  newDataItem = [...newDataItem,item];
+}else if(action.type=='delete-New-Item'){
+  const index = newDataItem.findIndex((obj) => obj.id === action.payload.id);
+  newDataItem.splice(index, 1);
+}
+return newDataItem;
+}
 
 function ToDoComponent(props) {
   const { DataItem, emptyDataItem } = props;
   const [strHandleEventtxt, setStrHandleEventtxt] = useState("logs - Parent-2");
 
-  const [dataList, setDatalist] = useState(DataItem);
+  
   const [jsonData, setjsonData] = useState(JSON.stringify(DataItem, null, 2));
   const [popupMsgType, setPopupMsgType] = useState("");
+ // const [dataList, setDatalist] = useState(DataItem);  //Here we use reduce
+  //Reduce Use
+  const [dataList, dispatchDatalist] = useReducer(ToDoComponentReducer,DataItem)
 
   let [showPopup, setShowPopup] = useState(false);
 
@@ -29,36 +49,47 @@ function ToDoComponent(props) {
     type:"button"
   };
   const AddListItem = (event, fieldValue) => {
-    setStrHandleEventtxt(`Event - ${event.btnName}`);
-    if (event.id === "add") {
-      const item = {
-        id: dataList.length ? dataList.length + 1 : 1,
-        listName: fieldValue.txtListName,
-        listDate: fieldValue.dtpDate,
-      };
-      const newDataList = [...dataList,item];     
-      setDatalist(newDataList);
+   // setStrHandleEventtxt(`Event - ${event.btnName}`);
+    console.log(fieldValue)
+   // if (event.id === "add") {
+       //This code call reducer  
+       const newItemAction = {
+        type: "add-New-Item",
+        payload:{ id: dataList.length ? dataList.length + 1 : 1,
+          listName: fieldValue.txtListName,
+          listDate: fieldValue.dtpDate,}
+
+       }
+       dispatchDatalist(newItemAction);
+       //////   
+      //setDatalist(newDataList);  //use reducer
       setjsonData(JSON.stringify(DataItem, null, 2));
       setPopupMsgType("sucess");
       setShowPopup(true);
       setTimeout((time) => {
         setShowPopup(false);
       }, 2000);
-    }
+   // }
   };
   const buttonDeletClick = (dataItem, event) => {
     setStrHandleEventtxt(`Event - ${event.btnName}`);
-    if (event.id === "delete") {
-      const index = dataList.findIndex((obj) => obj.id === dataItem.id);
-      dataList.splice(index, 1);
-      setDatalist(dataList);
-      setjsonData(JSON.stringify(DataItem, null, 2));
+   // if (event.id === "delete") {
+    const deleteItemAction = {
+      type: "delete-New-Item",
+      payload:{ id: dataItem.id }
+
+     }
+     dispatchDatalist(deleteItemAction);
+      //setDatalist(dataList); //Use reducer
+      setjsonData(JSON.stringify(dataList, null, 2));
       setPopupMsgType("delete");
+
       setShowPopup(true);
-      setTimeout((time) => {
+
+      setTimeout(() => {
         setShowPopup(false);
       }, 2000);
-    }
+   // }
   };
 
   const showHideComponent = () => {
@@ -90,7 +121,7 @@ function ToDoComponent(props) {
       {showPopup && (
         <ToDoPopupComponent msgType={popupMsgType}></ToDoPopupComponent>
       )}
-      <AddToDoComponent AddToDoListItem={AddListItem}></AddToDoComponent>
+      <AddToDoComponent></AddToDoComponent>
       {emptyDataItem}
       {dataItemRenderList}
       {/*dataList.map((item) => (

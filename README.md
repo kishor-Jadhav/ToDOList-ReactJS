@@ -9,4 +9,4 @@ Currently, two official plugins are available:
 
 
 New Add =
-1. context API
+1. Reducer State
