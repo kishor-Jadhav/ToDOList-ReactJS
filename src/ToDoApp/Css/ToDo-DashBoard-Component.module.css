@@ -1,0 +1,21 @@
+.container-page{
+    width: 80%;
+    margin: auto;
+    background-color:aqua;    
+    border-style: groove;
+}
+.header-item{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.body-section{
+    width: 100%;
+}
+@media (min-width: 991.98px) {  
+    .container-Wraper{
+        padding-left: 100px !important;
+        padding-right: 100px  !important;
+    }
+ }
